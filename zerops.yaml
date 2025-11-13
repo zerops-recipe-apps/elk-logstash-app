@@ -1,0 +1,33 @@
+zerops:
+  - setup: logstash
+    build:
+      deployFiles:
+        - logstash.yml
+        - zerops-syslog.conf
+    run:
+      os: ubuntu
+      base: ubuntu@24.04
+      envVariables:
+        ELASTICSEARCH_URL: http://elkstorage:9200 # Change, if your Elasticsearch runs on different hostname.
+        ELASTICSEARCH_PASSWORD: ${elkstorage_password}
+      ports:
+        - port: 1514
+          protocol: udp
+        - port: 1514
+          protocol: tcp
+      prepareCommands:
+        - wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+        - echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+        - sudo apt-get update && sudo apt-get install logstash=1:8.16.6-1
+        - sudo apt-get autoremove && sudo apt-get clean # Make runtime image smaller.
+      envReplace:
+        delimiter: '%%'
+        target:
+          - logstash.yml
+          - zerops-syslog.conf
+      initCommands:
+        - sudo cp -f zerops-syslog.conf /etc/logstash/conf.d/zerops-syslog.conf
+        - sudo cp -f logstash.yml /etc/logstash/logstash.yml
+        - sudo chown -R logstash /etc/logstash
+        - sudo systemctl enable logstash
+        - sudo systemctl start logstash
