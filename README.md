@@ -106,4 +106,19 @@ services:
 ```
 <!-- #ZEROPS_REMOVE_END# -->
 
-This is README.md of the `logstash` recipe app.
+## Increasing Memory
+
+To save resources for low-resource development environments, default heap memory size configured for Logstash is 256MB.
+Feel free to increase this value by setting `LOGSTASH_HEAP_MEMORY_OVERRIDE` environment variable (e.g. `LOGSTASH_HEAP_MEMORY_OVERRIDE="2g"`) and [trigger re-deploy](https://docs.zerops.io/features/pipeline#using-zerops-gui).
+Or fork this repository, change the `LOGSTASH_HEAP_MEMORY` environment variable value in `zerops.yaml` and deploy a new version through `zcli push` or Git integration. [^1].
+
+After that, remember to increase the service scaling settings accordingly.
+
+## After Re-deploy
+
+If you have enabled log forwarding to a Logstash service, and you've deployed new app version to that Logstash service,
+it may take some time for `syslog-ng` (running in the project `core` service) to invalidate the connection to the old container(s) and establish a new one(s).
+
+Consider reloading the logs forwarding settings (re-save the same configuration) to receive the fresh logs immediately.
+
+[^1]: https://www.elastic.co/docs/reference/logstash/jvm-settings#heap-size
