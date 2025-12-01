@@ -1,4 +1,3 @@
-<!-- #ZEROPS_REMOVE_START# -->
 # Zerops x Elastic Stack
 
 Elastic is a distributed search and analytics engine at the core of the Elastic Stack, designed for storing, searching, and analyzing large volumes of structured and unstructured data in near real-time.
@@ -104,7 +103,8 @@ services:
     envSecrets:
       SECRET_TOKEN: <@generateRandomString(<32>)>
 ```
-<!-- #ZEROPS_REMOVE_END# -->
+
+<!-- #ZEROPS_EXTRACT_START:maintenance-guide# -->
 
 ## Increasing Memory
 
@@ -122,3 +122,5 @@ it may take some time for `syslog-ng` (running in the project `core` service) to
 Consider reloading the logs forwarding settings (re-save the same configuration) to receive the fresh logs immediately.
 
 [^1]: https://www.elastic.co/docs/reference/logstash/jvm-settings#heap-size
+
+<!-- #ZEROPS_EXTRACT_END:maintenance-guide# -->
